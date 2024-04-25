@@ -6,5 +6,5 @@ const dichvucontroller=require("../controller/dichvi.controller");
 router.get('/',dichvucontroller.getAllServices);
 router.post('/',dichvucontroller.createService);
 router.delete('/',dichvucontroller.deleteService);
-router.put('/',dichvucontroller.updateService);
+router.put('/',dichvucontroller.updateService)
 module.exports = router;
