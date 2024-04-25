@@ -9,10 +9,6 @@ const DatLichSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    soDienThoai: {
-        type: String,
-        required: true,
-    },
     soLuong: {
         type: Number,
         required: true,

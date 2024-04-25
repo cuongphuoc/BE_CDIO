@@ -1,17 +1,9 @@
-// Import the routes related to "khachhang"
-const khachhang = require("./khachhangRoter"); 
-const nhanvien = require("./NhanVienRoute"); 
-const admin = require("./AdminRounter"); 
-const dichvu = require("./DichVuRouter"); 
-const datlich = require("./DatLichrouter"); 
+const khachhang = require("./khachhangRoter"); // Import the routes related to "khachhang"
 
 // Define a function called route that takes an Express app instance as an argument
 function route(app){
-    app.use("/khachhangs", khachhang);
-    app.use("/nhanviens", nhanvien);
-    app.use("/admins", nhanvien);
-    app.use("/dichvus", nhanvien);
-    app.use("/datlichs", nhanvien);   
+    // Mount the "khachhang" routes under the "/khachhang" path
+    app.use("/khachhang", khachhang);
 }
 
 // Export the route function
