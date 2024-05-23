@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 
 const NhanVienSchema = new mongoose.Schema({
-    id: {
-        type: String,
-        unique: true,
-    },
+    
     hoTen: {
         type: String,
         required: true,

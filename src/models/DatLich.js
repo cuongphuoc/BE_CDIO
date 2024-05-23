@@ -1,33 +1,32 @@
 const mongoose = require('mongoose');
 
 const DatLichSchema = new mongoose.Schema({
-    id: {
-        type: String,
-        unique: true,
-    },
-    idKhachHang: {
+    
+   
+    soDienThoai: {
         type: String,
         required: true,
     },
-    soLuong: {
-        type: Number,
+    hoTen: {
+        type: String,
         required: true,
     },
     ngayDatLich: {
-        type: Date,
-        required: true,
-    },
-    gio: {
         type: String,
         required: true,
     },
+    
     loaiDichVu: {
         type: String,
         required: true,
     },
-    idNhanVien: {
+    message:{
         type: String,
-        required: true
+        required: true,
+    },
+    email:{
+        type: String,
+        required: true,
     }
 });
 

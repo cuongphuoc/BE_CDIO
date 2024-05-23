@@ -27,12 +27,28 @@ class DatLichController {
 
     // Thêm lịch đặt mới
     async createDatLich(req, res) {
+        console.log('Request body:', req.body); // Debug: In ra dữ liệu nhận được từ client
+        const { soDienThoai, hoTen, ngayDatLich, loaiDichVu, message,email } = req.body;
+    
+        if (!soDienThoai || !hoTen || !ngayDatLich || !loaiDichVu || !message||!email) {
+            return res.status(400).send({ message: 'All fields are required' }); // Kiểm tra tất cả các trường bắt buộc
+        }
+    
+        const datLich = new DatLich({
+            soDienThoai,
+            hoTen,
+            ngayDatLich,
+            loaiDichVu,
+            message,
+            email
+        });
+    
         try {
-            const newDatLich = new DatLich(req.body);
-            await newDatLich.save();
-            res.status(201).json(newDatLich);
+            const savedDatLich = await datLich.save();
+            res.status(200).send(savedDatLich);
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            console.error('Error saving datLich:', error); // Debug: In ra lỗi nếu có
+            res.status(500).send(error);
         }
     }
 

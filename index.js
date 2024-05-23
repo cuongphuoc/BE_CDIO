@@ -1,42 +1,71 @@
 const http = require('http');
-const express = require('express'); // Import express module correctly
+const express = require('express');
+const cors = require('cors');
 const { connect } = require("./database");
 const route = require("./src/router");
-
-// Create an express application
 const bodyParser = require('body-parser');
+const expressSession = require('express-session');
+const { Server } = require('socket.io'); // Cập nhật import của Socket.IO
 
+// Tạo một ứng dụng express
 const app = express();
-app.use(express.json());
-app.use(bodyParser());
+
+// Sử dụng middleware built-in của express để phân tích cú pháp JSON và dữ liệu URL-encoded
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// parse various different custom JSON types as JSON
-app.use(bodyParser.json({ type: 'application/*+json' }));
-// parse some custom thing into a Buffer
-app.use(bodyParser.raw({ type: 'application/vnd.custom-type' }));
-// parse an HTML body into a string
-app.use(bodyParser.text({ type: 'text/html' }));
-// parse an text body into a string
-app.use(bodyParser.text({ type: 'text/plain' }));
-// create application/x-www-form-urlencoded parser
-app.use(bodyParser.urlencoded({ extended: false }));
-// Connect to the database
+
+// Sử dụng express-session để quản lý phiên làm việc
+app.use(expressSession({
+    secret: "yadayada",
+    resave: true,
+    saveUninitialized: true
+}));
+
+// Kích hoạt CORS
+app.use(cors());
+
+// Kết nối tới cơ sở dữ liệu
 connect();
 
-// Set up the port
+// Thiết lập cổng
 const port = 3000;
 app.set('port', port);
+
+// Định nghĩa một route đơn giản
 app.get('/', (req, res) => {
-    res.send('Chào mừng đến với máy chủ'); // I've adjusted the Vietnamese text here
+    res.send('Chào mừng đến với máy chủ'); 
 });
 
-// Apply your routes
+// Áp dụng các route của bạn
 route(app);
 
-// Create the server
+// Tạo máy chủ
 const server = http.createServer(app);
 
-// Start listening on the specified port
+// Khởi tạo Socket.IO và gắn nó vào máy chủ HTTP với cấu hình CORS
+const io = new Server(server, {
+  cors: {
+    origin: "*"
+  }
+});
+
+// Lắng nghe các kết nối Socket.IO
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    // Xử lý một tin nhắn từ client
+    socket.on('message', (msg) => {
+        console.log('Message received:', msg);
+        // Phát tin nhắn tới tất cả các client kết nối
+        io.emit('message', msg);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
+    });
+});
+
+// Bắt đầu lắng nghe trên cổng đã chỉ định
 server.listen(port, () => {
     console.log('Server is running on port ' + port);
 });

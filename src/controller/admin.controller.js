@@ -45,6 +45,33 @@ class AdminController {
             res.status(500).json({ message: error.message });
         }
     }
+    async login(req, res) {
+        console.log(req.body);
+        const { tenDangNhap, matKhau } = req.body;
+        try {
+            // Find admin by username
+            const admin = await Admin.findOne({ tenDangNhap });
+
+            // If admin not found or password is incorrect
+            if (!admin || admin.matKhau !== matKhau) {
+                return res.status(401).json({ message: 'Invalid username or password' });
+            }
+
+            // Set session data
+            req.session.adminId = admin._id;
+
+            // Send cookie to client
+            res.cookie('adminId', admin._id, {
+                maxAge: 3600000, // 1 hour
+                httpOnly: true, // Cookie accessible only by the server
+            });
+
+            // If username and password are correct
+            res.json({ message: 'Login successful', admin });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = new AdminController();
